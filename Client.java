@@ -1,5 +1,8 @@
+package fileserver;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
@@ -8,6 +11,7 @@ public class Client {
     private Socket connection;
     private DataInputStream socketIn;
     private DataOutputStream socketOut;
+    private FileOutputStream fileout;
     private int bytes;
     private byte[] buffer = new byte[BUFFER_SIZE];
 
@@ -19,21 +23,30 @@ public class Client {
             socketOut = new DataOutputStream(connection.getOutputStream()); // Write data to server
 
             socketOut.writeUTF(filename); // Write filename to server
-            
+
+            FileOutputStream fileOut = new FileOutputStream("received_" + filename);
+
             // Read file contents from server
             while (true) {
                 bytes = socketIn.read(buffer, 0, BUFFER_SIZE); // Read from socket
-                if (bytes <= 0) break; // Check for end of file
+               
+                if (bytes <= 0) {
+                    break; // Check for end of file
+                }
+
+                fileOut.write(buffer, 0, bytes); // Write to file
                 System.out.print(new String(buffer, StandardCharsets.UTF_8)); // Write to standard output
             }
 
+            fileOut.close();
             connection.close();
+            
         } catch (Exception ex) {
             System.out.println("Error: " + ex);
         }
     }
 
     public static void main(String[] args) {
-        Client client = new Client("127.0.0.1", 5000, args[0]);
+        Client client = new Client("127.0.0.1", 5454, "test.txt");
     }
 }
