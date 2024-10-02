@@ -1,3 +1,5 @@
+package fileserver;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -23,6 +25,10 @@ public class Server {
             while (true) {
                 try {
                     connection = socket.accept(); // Block for connection request
+
+                    if(connection.getPort() > 0){
+                    System.out.println("Connection accepted from " + socket.getInetAddress().getHostAddress() + " on port " + connection.getPort());
+                    }
 
                     socketIn = new DataInputStream(connection.getInputStream()); // Read data from client
                     socketOut = new DataOutputStream(connection.getOutputStream()); // Write data to client
@@ -56,6 +62,6 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        Server server = new Server(5000);
+        Server server = new Server(5454);
     }
 }
