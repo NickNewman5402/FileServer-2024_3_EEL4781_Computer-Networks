@@ -81,6 +81,7 @@ public class Server {
                             System.out.println("Sent " + percentageSent + "% of " + filename);
                         }
                         */
+                        if(DEBUG == 1){
                         if(bytes != -1 && fileSize <= BUFFER_SIZE && (Math.floor(percentageSent) % 10 == 0 || Math.ceil(percentageSent) % 10 == 0)){
                             percentageSent = 10;
                             for(int i = 0; i <= 9; i++){
@@ -97,7 +98,7 @@ public class Server {
                                 System.out.printf("Sent %.0f%% of %s\n", Math.ceil(percentageSent), filename);
                             }
                         }
-                         
+                    }
                         // Send the actual bytes read from the buffer to the client
                         socketOut.write(buffer, 0, bytes); // Write bytes to socket
                        
@@ -111,7 +112,9 @@ public class Server {
                     // Clean up socket and file streams
                     if (connection != null) {
                         connection.close();
+                        if(DEBUG == 1){
                         System.out.println("Finished sending " + filename + " to " + socket.getInetAddress().getHostAddress());
+                        }
                     }
 
                     if (fileIn != null) {
